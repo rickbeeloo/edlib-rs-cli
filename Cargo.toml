@@ -21,17 +21,3 @@ cmake = "0.1"
 [[examples]]
 name = "edaligner"
 path = "examples/edaligner.rs"
-
-[dependencies]
-
-lazy_static = { version = "1.4", doc = false}
-
-# for examples we need the following
-clap = {version = "2.33", doc = false}
-needletail = {version = "0.4", doc = false}
-cpu-time = {version = "1.0", doc = false}
-
-# decreasing order of log for debug build : (max_level_)trace debug info warn error off
-# decreasing order of log for release build (release_max_level_)  .. idem
-log = { version = "0.4", features = ["max_level_trace", "release_max_level_info"] }
-env_logger = { version = "0.7"}

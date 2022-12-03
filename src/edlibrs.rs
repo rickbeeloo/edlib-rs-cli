@@ -7,9 +7,6 @@
 /// We also avoid pointers.
 ///
 
-extern crate log;
-use log::*;
-
 
 use ::std::slice;
 use ::std::os::raw::c_char;
@@ -292,7 +289,6 @@ pub fn edlibAlignRs(query : &[u8], target : &[u8], config_rs : &EdlibAlignConfig
     }
 
     // Recast to EdlibAlignResultRs
-    trace!("avant call edlibAlign");
     let res_c : EdlibAlignResult = unsafe { edlibAlign(query.as_ptr() as *const ::std::os::raw::c_char,
                                         query.len() as ::std::os::raw::c_int, 
                                         target.as_ptr() as *const ::std::os::raw::c_char, 
@@ -301,7 +297,6 @@ pub fn edlibAlignRs(query : &[u8], target : &[u8], config_rs : &EdlibAlignConfig
                                         config_c
                                     )} ;
     // go back to EdlibAlignResultRs. Clone incurs some cost. Should go to impl From<EdlibAlignResult>
-    log::trace!("apres call edlibAlign");
     let mut align_res_rs = EdlibAlignResultRs::default();
     align_res_rs.status = res_c.status as u32;
     align_res_rs.editDistance = res_c.editDistance as i32;
@@ -327,7 +322,6 @@ pub fn edlibAlignRs(query : &[u8], target : &[u8], config_rs : &EdlibAlignConfig
     align_res_rs.alphabetLength = res_c.alphabetLength as u32;
     // Free C datas
     unsafe { edlibFreeAlignResult(res_c); };
-    trace!("exiting  call edlibAlignRs ");
 //
     align_res_rs
 }
@@ -378,8 +372,6 @@ use super::*;
 
 #[test]
 fn test_distance_nw() {
-    env_logger::Builder::from_default_env().init();
-    trace!("test_distance_nw");
     let query = "ACCTCTG";
     let target = "ACTCTGAAA";
     let align_res = edlibAlignRs(query.as_bytes(), target.as_bytes(), &EdlibAlignConfigRs::default());
@@ -390,8 +382,6 @@ fn test_distance_nw() {
 
 #[test]
 fn test_distance_shw() {
-    env_logger::Builder::from_default_env();
-    trace!("test_distance_shw");
     let query = "ACCTCTG";
     let target = "ACTCTGAAA";
     //
@@ -404,7 +394,6 @@ fn test_distance_shw() {
 
 #[test]
 fn test_distance_hw() {
-    trace!("test_distance_hw");
     let query = "ACCTCTG";
     let target = "TTTTTTTTTTTTTTTTTTTTTACTCTGAAA";
     //
@@ -417,7 +406,6 @@ fn test_distance_hw() {
 
 #[test]
 fn test_distance_hw_with_pair() {
-    trace!("test_distance_hw_with_pair");
     let query = "ACCTCTG";
     let target = "TTTTTTTTTTTTTTTTTTTTTNCTCTXAAA";
     let mut equalitypairs = Vec::<EdlibEqualityPairRs>::new();
@@ -437,7 +425,6 @@ fn test_distance_hw_with_pair() {
 
 #[test]
 fn test_path_hw() {
-    trace!("test_path_hw");
     let query = "missing";
     let target = "mississipi";
     //
@@ -467,7 +454,6 @@ fn test_path_hw() {
 
 #[test]
 fn test_distance_nw_with_max_k() {
-    trace!("test_distance_nw");
     let query = "ACCTCTG";
     let target = "ACTCTGAAA";
     let mut config = EdlibAlignConfigRs::default();

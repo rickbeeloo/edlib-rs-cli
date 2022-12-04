@@ -65,7 +65,7 @@ fn main() {
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     //
-    println!("cargo:rerun-if-changed=binding.rs");
+    println!("cargo:rerun-if-changed={}", wrapper_path.to_str().unwrap());
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");

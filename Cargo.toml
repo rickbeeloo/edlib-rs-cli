@@ -16,3 +16,8 @@ path = "src/lib.rs"
 [build-dependencies]
 bindgen = "0.63.0"
 cmake = "0.1"
+
+[dev-dependencies]
+clap = "3.0"
+cpu-time = "1.0"
+needletail = "0.4.1"

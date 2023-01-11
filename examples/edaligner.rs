@@ -5,7 +5,6 @@ extern crate edlib_rs;
 use edlib_rs::edlibrs::*;
 
 use clap::{App, Arg};
-use log::*;
 use std::path::Path;
 use std::process;
 
@@ -16,9 +15,6 @@ use std::time::Duration;
 ///           --tf "Enterobacteria_phage_1.fasta"
 ///           --qf "mutated_60_perc.fasta"
 fn main() {
-    // initialize logger from env variable RUST_LOG
-    env_logger::Builder::from_default_env().init();
-
     let dirdata: String;
     let qfile: String;
     let tfile: String;
@@ -89,9 +85,7 @@ fn main() {
     }
 
     let qfname = Path::new(&dirdata).join(qfile);
-    info!(" got query file : {:?} ", qfname);
     let tfname = Path::new(&dirdata).join(tfile);
-    info!(" got target file : {:?} ", tfname);
     // use logger
     let qseq: Vec<u8>;
     // get sequences

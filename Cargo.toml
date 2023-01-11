@@ -1,17 +1,14 @@
 [package]
 name = "edlib_rs"
 version = "0.1.2"
-authors = ["jeanpierre.both@gmail.com"]
+authors = ["jeanpierre.both@gmail.com", "ragnar.grootkoerkamp@gmail.com"]
 edition = "2018"
 build = "build.rs"
 license = "MIT/Apache-2.0"
 keywords = ["ffi", "bindings", "edlib"]
-repository = "https://github.com/jean-pierreBoth/edlib-rs"
-documentation = "https://docs.rs/edlib_rs"
+repository = "https://github.com/pairwise-alignment/edlib-rs"
 description = "A rust interface to the C++ edlib library"
-
-[lib]
-path = "src/lib.rs"
+#documentation = "https://docs.rs/edlib_rs"
 
 [build-dependencies]
 bindgen = "0.63.0"

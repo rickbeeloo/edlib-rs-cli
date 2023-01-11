@@ -15,7 +15,7 @@ lib = "edlib_rs"
 path = "src/lib.rs"
 
 [build-dependencies]
-bindgen = "0.55.1"
+bindgen = "0.63.0"
 cmake = "0.1"
 
 [[examples]]

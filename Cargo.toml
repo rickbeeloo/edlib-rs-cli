@@ -11,13 +11,8 @@ documentation = "https://docs.rs/edlib_rs"
 description = "A rust interface to the C++ edlib library"
 
 [lib]
-lib = "edlib_rs"
 path = "src/lib.rs"
 
 [build-dependencies]
 bindgen = "0.63.0"
 cmake = "0.1"
-
-[[examples]]
-name = "edaligner"
-path = "examples/edaligner.rs"

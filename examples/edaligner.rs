@@ -2,7 +2,7 @@
 /// of edlib. It loads simple fasta files of one sequence in directory test_data of edlib.
 ///
 extern crate edlib_rs;
-use edlib_rs::edlibrs::*;
+use edlib_rs::edlib_sys::*;
 
 use clap::{App, Arg};
 use std::path::Path;

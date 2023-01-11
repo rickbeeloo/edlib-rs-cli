@@ -20,8 +20,8 @@ fn write_wrapper(wrapper_path: &PathBuf) {
 }
 
 fn main() {
-    //  try to build edlib in build.rs with edlib cloned in edlib-c (from which we removed )
-    let dst = cmake::Config::new("edlib-c")
+    // Try to build edlib submodule in build.rs
+    let dst = cmake::Config::new("edlib")
         .cflag("-D CMAKE_BUILD_TYPE=Release")
         .build();
     println!("cargo:rustc-link-search=native={}", dst.display());

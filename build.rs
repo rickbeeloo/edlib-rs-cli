@@ -14,6 +14,8 @@ fn main() {
     }
 
     // Generate bindings when the header file changes.
+    let impl_path = "edlib/edlib/src/edlib.cpp";
+    println!("cargo:rerun-if-changed={}", impl_path);
     let header_path = "edlib/edlib/include/edlib.h";
     println!("cargo:rerun-if-changed={}", header_path);
     bindgen::Builder::default()

@@ -3,6 +3,7 @@ use ::std::os::raw::c_char;
 use clap::Parser;
 use edlib_rs::edlib_sys::*;
 use edlib_rs::*;
+use std::io::Write;
 use std::path::Path;
 
 fn get_config() -> EdlibAlignConfigRs<'static> {
@@ -61,7 +62,6 @@ fn main() {
         let tseq = trec.seq().into_owned();
         let align_res = edlibAlignRs(&q_seq, &tseq, &config);
         assert_eq!(align_res.status, EDLIB_STATUS_OK);
-        use std::io::Write;
         writeln!(writer, "{}", align_res.editDistance).expect("Unable to write to output file");
     }
 }

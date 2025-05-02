@@ -3,7 +3,9 @@
 ///
 extern crate edlib_rs;
 use edlib_rs::edlib_sys::*;
+use edlib_rs::*; // This imports all public items including EdlibAlignConfigRs and EdlibAlignModeRs
 
+use ::std::os::raw::c_char;
 use clap::{App, Arg};
 use std::path::Path;
 use std::process;
@@ -18,6 +20,7 @@ fn main() {
     let dirdata: String;
     let qfile: String;
     let tfile: String;
+    let output_file: String;
 
     let matches = App::new("edaligner")
         .arg(
@@ -39,6 +42,13 @@ fn main() {
                 .takes_value(true)
                 .help("expection target file for seq"),
         )
+        .arg(
+            Arg::with_name("output")
+                .long("output")
+                .takes_value(true)
+                .required(true)
+                .help("output file to write the edit distance"),
+        )
         .get_matches();
 
     // get data directory
@@ -50,7 +60,7 @@ fn main() {
             .unwrap()
             .parse::<String>()
             .unwrap();
-        println!("got dirdata , {}", dirdata);
+        //println!("got dirdata , {}", dirdata);
     } else {
         println!("dirdata is mandatory");
         process::exit(1);
@@ -64,9 +74,9 @@ fn main() {
             .unwrap()
             .parse::<String>()
             .unwrap();
-        println!("got qfile , {}", qfile);
+        //println!("got qfile , {}", qfile);
     } else {
-        println!("query file is mandatory");
+        // println!("query file is mandatory");
         process::exit(1);
     }
 
@@ -78,9 +88,23 @@ fn main() {
             .unwrap()
             .parse::<String>()
             .unwrap();
-        println!("got target file , {}", tfile);
+        //  println!("got target file , {}", tfile);
     } else {
-        println!("target file is mandatory");
+        // println!("target file is mandatory");
+        process::exit(1);
+    }
+
+    // get output file
+    if matches.is_present("output") {
+        output_file = matches
+            .value_of("output")
+            .ok_or("bad value")
+            .unwrap()
+            .parse::<String>()
+            .unwrap();
+        //  println!("got output file , {}", output_file);
+    } else {
+        println!("output file is mandatory");
         process::exit(1);
     }
 
@@ -92,8 +116,6 @@ fn main() {
     let mut reader = needletail::parse_fastx_file(&qfname).expect("expecting valid query filename");
     if let Some(record) = reader.next() {
         let qrec = record.expect("invalid record");
-        let n_bases = qrec.num_bases();
-        println!(" query nb bases : {}", n_bases);
         qseq = qrec.seq().into_owned();
     } else {
         std::process::exit(1);
@@ -105,51 +127,74 @@ fn main() {
         needletail::parse_fastx_file(&tfname).expect("expecting valid target filename");
     if let Some(record) = reader.next() {
         let trec = record.expect("invalid record");
-        let n_bases = trec.num_bases();
-        println!(" target nb bases : {}", n_bases);
         tseq = trec.seq().into_owned();
     } else {
         std::process::exit(1);
     } // end for query seq
+
+    // Only run the EDLIB_MODE_HW alignment and save results to file
     let mut config = EdlibAlignConfigRs::default();
-    let mut mod_str;
-    //
-    mod_str = "EDLIB_MODE_NW";
-    config.mode = EdlibAlignModeRs::EDLIB_MODE_NW;
-    let start = ProcessTime::try_now().unwrap();
-    let align_res = edlibAlignRs(&qseq, &tseq, &config);
-    assert_eq!(align_res.status, EDLIB_STATUS_OK);
-    let cpu_time: Duration = start.try_elapsed().unwrap();
-    println!(
-        "\n mode : {}, cpu time (ms) {} distance : {} ",
-        mod_str,
-        cpu_time.as_millis(),
-        align_res.editDistance
-    );
-    //
-    mod_str = "EDLIB_MODE_SHW";
-    config.mode = EdlibAlignModeRs::EDLIB_MODE_SHW;
-    let start = ProcessTime::try_now().unwrap();
-    let align_res = edlibAlignRs(&qseq, &tseq, &config);
-    assert_eq!(align_res.status, EDLIB_STATUS_OK);
-    let cpu_time: Duration = start.try_elapsed().unwrap();
-    println!(
-        "\n mode : {}, cpu time (ms) {} distance : {} ",
-        mod_str,
-        cpu_time.as_millis(),
-        align_res.editDistance
-    );
-    //
-    mod_str = "EDLIB_MODE_HW";
     config.mode = EdlibAlignModeRs::EDLIB_MODE_HW;
+    let mut equalitypairs = Vec::<EdlibEqualityPairRs>::new();
+    let pair = EdlibEqualityPairRs {
+        first: 'A' as c_char,
+        second: 'N' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'T' as c_char,
+        second: 'N' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'G' as c_char,
+        second: 'N' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'C' as c_char,
+        second: 'N' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'N' as c_char,
+        second: 'N' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'a' as c_char,
+        second: 'n' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 't' as c_char,
+        second: 'n' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'g' as c_char,
+        second: 'n' as c_char,
+    };
+    equalitypairs.push(pair);
+    let pair = EdlibEqualityPairRs {
+        first: 'c' as c_char,
+        second: 'n' as c_char,
+    };
+    equalitypairs.push(pair);
+    config.additionalequalities = &equalitypairs;
+
     let start = ProcessTime::try_now().unwrap();
     let align_res = edlibAlignRs(&qseq, &tseq, &config);
     assert_eq!(align_res.status, EDLIB_STATUS_OK);
     let cpu_time: Duration = start.try_elapsed().unwrap();
+
     println!(
-        "\n mode : {}, cpu time (ms) {} distance : {} ",
-        mod_str,
+        "\nmode: EDLIB_MODE_HW, cpu time (ms): {}, distance: {}",
         cpu_time.as_millis(),
         align_res.editDistance
     );
+
+    // Write edit distance to output file
+    std::fs::write(&output_file, align_res.editDistance.to_string())
+        .expect("Unable to write to output file");
 }

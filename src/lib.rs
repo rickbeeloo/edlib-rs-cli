@@ -101,8 +101,8 @@ pub enum EdlibEdopRs {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct EdlibEqualityPairRs {
-    first: ::std::os::raw::c_char,
-    second: ::std::os::raw::c_char,
+    pub first: ::std::os::raw::c_char,
+    pub second: ::std::os::raw::c_char,
 }
 
 //=================================================================================================

@@ -18,11 +18,15 @@ fn main() {
     println!("cargo:rerun-if-changed={}", impl_path);
     let header_path = "edlib/edlib/include/edlib.h";
     println!("cargo:rerun-if-changed={}", header_path);
+
+    // Get the output directory from cargo
+    let out_path = std::path::PathBuf::from(std::env::var("OUT_DIR").unwrap());
+
     bindgen::Builder::default()
         .header(header_path)
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file(out_dir.join("bindings.rs"))
+        .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
 }

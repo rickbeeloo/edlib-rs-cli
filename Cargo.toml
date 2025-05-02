@@ -10,11 +10,22 @@ repository = "https://github.com/pairwise-alignment/edlib-rs"
 description = "A rust interface to the C++ edlib library"
 #documentation = "https://docs.rs/edlib_rs"
 
+[lib]
+name = "edlib_rs"
+path = "src/lib.rs"
+
+[[bin]]
+name = "edaligner"
+path = "src/main.rs"
+
 [build-dependencies]
 bindgen = "0.63.0"
 cmake = "0.1"
 
-[dev-dependencies]
+[dependencies]
 clap = "3.0"
 cpu-time = "1.0"
 needletail = "0.4.1"
+
+[profile.release]
+debug = true

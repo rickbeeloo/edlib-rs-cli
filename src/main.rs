@@ -19,9 +19,6 @@ fn get_config() -> EdlibAlignConfigRs<'static> {
     about = "Align query and target sequences using edlib"
 )]
 struct Cli {
-    #[clap(long, help = "Directory of data files")]
-    dirdata: String,
-
     #[clap(long, help = "Query file for sequence")]
     qf: String,
 
@@ -36,11 +33,11 @@ fn main() {
     // Parse command-line arguments using clap derive API
     let args = Cli::parse();
 
-    let qfname = Path::new(&args.dirdata).join(&args.qf);
-    let tfname = Path::new(&args.dirdata).join(&args.tf);
+    let qfname = Path::new(&args.qf);
+    let tfname = Path::new(&args.tf);
 
     // Read query sequences from file
-    let mut reader = needletail::parse_fastx_file(&qfname).expect("expecting valid query filename");
+    let mut reader = needletail::parse_fastx_file(qfname).expect("expecting valid query filename");
     let q_seq = if let Some(record) = reader.next() {
         let qrec = record.expect("invalid record");
         qrec.seq().into_owned()
@@ -55,7 +52,7 @@ fn main() {
     let mut writer = std::io::BufWriter::new(std::fs::File::create(&args.output).unwrap());
 
     // Compare targets to each query
-    let mut reader = needletail::parse_fastx_file(&tfname).expect("invalid ref filename");
+    let mut reader = needletail::parse_fastx_file(tfname).expect("invalid ref filename");
 
     while let Some(record) = reader.next() {
         let trec = record.expect("invalid record");
